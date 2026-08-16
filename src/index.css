@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+/*
+  Theme tokens for the whole site.
+
+  Dark mode values are the defaults in the @theme block below. Light mode
+  overrides live in `:root[data-theme="light"]` further down — if you change
+  a color, check whether the light version needs updating too.
+
+  Blue (--color-accent*) is the one accent color for the whole site — main
+  buttons, brand mark, tech badges, hover states, all of it. ThemeToggle.jsx
+  flips themes by setting data-theme on <html>; index.html sets it before
+  first paint so there's no flash.
+*/
+@theme {
+  --color-bg: #0a0a0f;
+  --color-surface: #131320;
+  --color-surface-light: #1b1b2e;
+  --color-border: #2a2a3d;
+
+  --color-ink: #f2f1f7;
+  --color-ink-secondary: #a6a3ba;
+  --color-ink-muted: #726f85;
+
+  --color-accent: #3b82f6; /* blue-500 */
+  --color-accent-light: #60a5fa; /* blue-400 */
+  --color-accent-dark: #1d4ed8; /* blue-700 */
+
+  --font-body: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Self-hosted so the font always loads instantly with no external request —
+   change the url() below if you ever swap fonts and re-download the file. */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/space-grotesk.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root[data-theme="light"] {
+  --color-bg: #faf9fc;
+  --color-surface: #ffffff;
+  --color-surface-light: #f1eff8;
+  --color-border: #e2dfec;
+
+  --color-ink: #17151f;
+  --color-ink-secondary: #55536b;
+  --color-ink-muted: #85829c;
+
+  --color-accent: #2563eb;
+  --color-accent-light: #1d4ed8;
+  --color-accent-dark: #1e40af;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Offsets anchor scroll targets so content isn't hidden behind the fixed navbar */
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Simple fade-up animation used across sections as content enters the viewport */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+
+/* Plain crossfade — used by the "outside engineering" hobby rotator */
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade {
+  animation: fade 0.4s ease-out both;
+}
+
+/* Slow continuous rotation — used by the big background gear in the hero */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 24s linear infinite;
+}
+
+/* Respect users who've asked their OS/browser to reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Just stop the rotation — don't touch opacity, the gear is meant to stay subtle */
+  .animate-spin-slow {
+    animation: none;
+  }
+}
+
+/* Thin, subtle scrollbar so it matches the theme */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-dark);
+}
