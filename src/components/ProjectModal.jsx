@@ -1,11 +1,63 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ImagePlaceholder from './ImagePlaceholder'
+import Lightbox from './Lightbox'
+
+// Gallery image with a hover-to-zoom affordance; clicking (or Enter/Space
+// when focused) opens it full-screen via the onZoom callback.
+function GalleryImage({ img, onZoom }) {
+  const zoomable = Boolean(img.src)
+
+  return (
+    <div
+      role={zoomable ? 'button' : undefined}
+      tabIndex={zoomable ? 0 : undefined}
+      onClick={zoomable ? () => onZoom(img) : undefined}
+      onKeyDown={
+        zoomable
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onZoom(img)
+              }
+            }
+          : undefined
+      }
+      aria-label={zoomable ? `view larger: ${img.label}` : undefined}
+      className={`group relative aspect-video overflow-hidden rounded-lg border border-border ${zoomable ? 'cursor-zoom-in' : ''}`}
+    >
+      <ImagePlaceholder
+        src={img.src}
+        label={img.label}
+        className="transition-transform duration-300 group-hover:scale-105"
+      />
+      {zoomable && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/30 group-hover:opacity-100">
+          <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+            />
+          </svg>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function ProjectModal({ project, onClose }) {
+  const [zoomedImage, setZoomedImage] = useState(null)
+
   // Close on Escape key, and lock page scroll while the modal is open.
+  // If the lightbox is open, Escape closes that first rather than both at once.
   useEffect(() => {
     const onKeyDown = (e) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key !== 'Escape') return
+      if (zoomedImage) {
+        setZoomedImage(null)
+      } else {
+        onClose()
+      }
     }
     document.addEventListener('keydown', onKeyDown)
     document.body.style.overflow = 'hidden'
@@ -13,7 +65,7 @@ export default function ProjectModal({ project, onClose }) {
       document.removeEventListener('keydown', onKeyDown)
       document.body.style.overflow = ''
     }
-  }, [onClose])
+  }, [onClose, zoomedImage])
 
   if (!project) return null
 
@@ -100,12 +152,7 @@ export default function ProjectModal({ project, onClose }) {
                 </h4>
                 <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {group.images.map((img) => (
-                    <div
-                      key={img.label}
-                      className="aspect-video overflow-hidden rounded-lg border border-border"
-                    >
-                      <ImagePlaceholder src={img.src} label={img.label} />
-                    </div>
+                    <GalleryImage key={img.label} img={img} onZoom={setZoomedImage} />
                   ))}
                 </div>
               </section>
@@ -118,12 +165,7 @@ export default function ProjectModal({ project, onClose }) {
               </h4>
               <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {details.images.map((img) => (
-                  <div
-                    key={img.label}
-                    className="aspect-video overflow-hidden rounded-lg border border-border"
-                  >
-                    <ImagePlaceholder src={img.src} label={img.label} />
-                  </div>
+                  <GalleryImage key={img.label} img={img} onZoom={setZoomedImage} />
                 ))}
               </div>
             </section>
@@ -141,6 +183,12 @@ export default function ProjectModal({ project, onClose }) {
           )}
         </div>
       </div>
+
+      <Lightbox
+        src={zoomedImage?.src}
+        alt={zoomedImage?.label}
+        onClose={() => setZoomedImage(null)}
+      />
     </div>
   )
 }

@@ -169,11 +169,11 @@ const projects = [
         'oscilloscope-based rise/fall time measurement',
       ],
       architecture:
-        'built as a cmos pull-up/pull-down network sized so rise and fall times stay balanced rather than skewed toward one edge, which matters once you’re chaining logic stages together.',
+        'two input inverters generate the complementary A\' and B\' signals, which feed a symmetric pmos pull-up / nmos pull-down core sized 1:1 so rise and fall times stay balanced rather than skewed toward one edge — a property that matters once you\'re chaining logic stages together.',
       challenges:
         'balancing rise and fall time with 1:1 sizing meant the pull-up and pull-down networks couldn’t just be mirror images of each other — getting both edges to behave symmetrically took some iteration on transistor sizing.',
       testing:
-        'measured output waveforms on an oscilloscope across all input combinations, evaluating rise and fall times directly against the design targets rather than just confirming correct logic levels.',
+        'measured output waveforms on an oscilloscope across all input combinations, evaluating rise and fall times directly against the design targets rather than just confirming correct logic levels. measured roughly 272 microseconds rise time and 205 microseconds fall time on the output edge.',
       learned:
         'a much more physical, hands-on understanding of how cmos logic gates actually behave at the transistor level — where "correct on paper" sizing still needs to be validated against real rise/fall behavior on the bench.',
       images: [
