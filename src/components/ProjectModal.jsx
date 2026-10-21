@@ -171,15 +171,29 @@ export default function ProjectModal({ project, onClose }) {
             </section>
           )}
 
-          {project.github && (
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-block rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-ink-secondary transition-colors hover:border-accent-light hover:text-accent-light"
-            >
-              view on github
-            </a>
+          {(project.github || project.demo) && (
+            <div className="flex flex-wrap gap-3">
+              {project.github && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-ink-secondary transition-colors hover:border-accent-light hover:text-accent-light"
+                >
+                  view on github
+                </a>
+              )}
+              {project.demo && (
+                <a
+                  href={project.demo}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-ink-secondary transition-colors hover:border-accent-light hover:text-accent-light"
+                >
+                  watch video demo
+                </a>
+              )}
+            </div>
           )}
         </div>
       </div>

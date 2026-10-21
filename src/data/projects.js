@@ -15,6 +15,46 @@
 
 const projects = [
   {
+    id: 'bms-secure-ota',
+    title: 'bms firmware w/ secure ota',
+    image: '/images/bms-dashboard-fault.png',
+    imageLabel: 'bms live dashboard isolating the pack on a cell fault',
+    shortDescription:
+      'freertos battery management firmware for a simulated 12-cell ev pack on an emulated arm cortex-m3, with a secure a/b bootloader that only boots ed25519-signed images and takes over-the-air updates over can.',
+    technologies: ['c', 'freertos', 'arm cortex-m3', 'can', 'qemu'],
+    accomplishments: [
+      'architected freertos firmware in c for a simulated 12-cell ev battery pack with zero heap usage',
+      'brought up an arm cortex-m3 with custom startup code, linker scripts, and interrupt-driven uart',
+      'implemented a contactor state machine with fault detection, isolating the pack on overheat in ~221 ms',
+      'built a 15.6 kb bootloader with ed25519 signature verification and a/b ota updates over can, featuring anti-rollback and auto-rollback after 3 failed boots',
+      'verified with 179 unit tests, 24 end-to-end qemu scenarios, and github actions ci',
+    ],
+    github: 'https://github.com/anushjay30/bms-firmware-secure-ota',
+    demo: '/videos/bms-firmware-demo.mp4',
+    details: {
+      overview:
+        'freertos firmware for a simulated 12-cell ev battery pack running on an emulated arm cortex-m3, with a secure bootloader that only boots signed firmware and accepts updates over can.',
+      features: [
+        'contactor state machine with fault detection that isolates the pack on overheat',
+        '15.6 kb bootloader with ed25519 signature verification',
+        'a/b ota updates over can with anti-rollback and auto-rollback after 3 failed boots',
+        'zero heap usage — all memory is statically allocated',
+      ],
+      architecture:
+        'the bms runs as a set of freertos tasks for cell monitoring, fault handling, contactor control, and can communication. a separate bare-metal bootloader verifies the firmware’s signature on every boot and starts one of two firmware slots, so a bad update can always fall back to the last working version.',
+      challenges:
+        'making updates safe — a new image has to be verified, boot on trial, and roll back automatically if it fails, all without leaving the pack in an unsafe state mid-update.',
+      testing:
+        'verified with 179 unit tests, 24 end-to-end qemu scenarios, and github actions ci on every push.',
+      learned:
+        'a much better understanding of how production ecu firmware handles secure boot and over-the-air updates, and how much of that work is about handling failure cases rather than the happy path.',
+      images: [
+        { label: 'live dashboard: cell 7 overheats and the pack is isolated', src: '/images/bms-dashboard-fault.png' },
+        { label: 'demo: fault isolation, signed ota update, and a rejected forged image', src: '/images/bms-demo.gif' },
+      ],
+    },
+  },
+  {
     id: 'riscv-pipeline',
     title: '5-stage pipelined risc-v32 processor',
     image: '/images/riscv-pipeline-block-diagram.png',
@@ -104,6 +144,7 @@ const projects = [
       'integrated an optional llm layer that explains timing results in plain english without ever seeing the raw report or influencing the pass/fail call',
     ],
     github: 'https://github.com/anushjay30/TimingScout',
+    demo: '/videos/timing-scout-demo.mp4',
     details: {
       overview:
         'a web app for making sense of vivado static timing reports quickly — parses the raw report, pulls out the metrics that actually matter (wns, tns, slack, critical path, failing/total endpoints), and renders a deterministic pass/fail verdict plus rule-based debugging suggestions. an optional llm layer can translate the already-computed results into a plain-english explanation, but it never touches the raw report and never decides pass or fail.',

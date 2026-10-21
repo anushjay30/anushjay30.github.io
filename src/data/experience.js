@@ -26,7 +26,7 @@ const experience = [
   },
   {
     id: 'skyjack',
-    title: 'embedded systems intern',
+    title: 'simulation engineer intern (embedded software)',
     company: 'skyjack',
     logo: '/images/skyjack-logo.png',
     dates: 'sept 2025 – dec 2025',

@@ -48,6 +48,16 @@ export default function ProjectCard({ project, onViewDetails }) {
               github
             </a>
           )}
+          {project.demo && (
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-border px-4 py-2 text-xs font-semibold text-ink-secondary transition-colors hover:border-accent-light hover:text-accent-light"
+            >
+              video demo
+            </a>
+          )}
           <button
             type="button"
             onClick={() => onViewDetails(project)}
